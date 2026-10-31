@@ -362,22 +362,7 @@ def mappedTri {V : Type*} [Fintype V] [DecidableEq V] (G : SimpleGraph V) [Decid
     (triCS G).O → ℕ :=
   fun t => #(P'.filter fun s => copyMap v u s.1 = t.1) + #(P''.filter fun s => copyMap u v s.1 = t.1)
 
-/-! ### Pure profiles and mixed copies (§7) -/
-
-/-- Pure-profile objects: a host `Fin m` and a pair from the common palette `Fin s`. -/
-abbrev PureObj (m s : ℕ) := Fin m × {e : Finset (Fin s) // e.card = 2}
-
-/-- Pure-profile feasibility: pairs at a common host are disjoint, and each pair is used at most
-once. -/
-def PureFeasible (m s : ℕ) (R : Finset (PureObj m s)) : Prop :=
-  (∀ x ∈ R, ∀ y ∈ R, x ≠ y → x.1 = y.1 → (x.2.1 ∩ y.2.1) = ∅) ∧
-  (∀ x ∈ R, ∀ y ∈ R, x.2.1 = y.2.1 → x.1 = y.1)
-
-open Classical in
-noncomputable instance (m s : ℕ) : DecidablePred (PureFeasible m s) := Classical.decPred _
-
-/-- The pure-profile packing number. -/
-noncomputable def pureNu (m s : ℕ) : ℕ := (univ.filter (PureFeasible m s)).sup Finset.card
+/-! ### Mixed copies (§7) -/
 
 /-- The mixed conflict system of `G`: the cliques of size 3 or 4, two of them conflicting iff they
 share an edge. -/
@@ -716,11 +701,6 @@ theorem corollary_6_2a {V : Type*} [Fintype V] [DecidableEq V] (G : SimpleGraph 
     nu3 (copyGraph G v u) + nu3 (copyGraph G u v) ≤ 3 * nu3 G := by
   rw [nu3_eq_paperV, nu3_eq_paperV, nu3_eq_paperV]
   exact PaperV.copy_triple_bound G v u huv
-
-/-- **Proposition 7.1 (pure profile, integral value).** With `m` hosts and a common palette of
-size `s`, the packing number is `min(m ⌊s/2⌋, C(s,2))`. -/
-theorem proposition_7_1 (m s : ℕ) : pureNu m s = min (m * (s / 2)) (s.choose 2) :=
-  PaperV.PureProfile.prop43_nu m s
 
 /-- **Theorem 7.3 (mixed copy inequality, fractional).** For nonadjacent `u, v` and every
 size-dependent gain, `W*(G_{v→u}) + W*(G_{u→v}) ≤ 2 W*(G)`. -/

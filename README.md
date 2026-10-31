@@ -31,7 +31,6 @@ colouring of bipartite graphs) and to vertex copies of triangle packings.
 | `theorem_6_1` | Theorem 6.1 | `ν₃*(G_{v→u}) + ν₃*(G_{u→v}) ≤ 2ν₃*(G)` for nonadjacent `u, v`. |
 | `theorem_6_2` | Theorem 6.2 | For maximum triangle packings `P'`, `P''` of `G_{v→u}`, `G_{u→v}` and `T₂` their image in `G` (`mappedTri`): `ν₃(G_{v→u}) + ν₃(G_{u→v}) = |T₂| ≤ 2ν₃(G) + oct(H[T₂])`. |
 | `corollary_6_2a` | Corollary 6.2a | `ν₃(G_{v→u}) + ν₃(G_{u→v}) ≤ 3ν₃(G)`. |
-| `proposition_7_1` | Proposition 7.1 | The pure-profile packing number is `min(m⌊s/2⌋, C(s,2))`. |
 | `theorem_7_3_fractional`, `theorem_7_3_integral` | Theorem 7.3 | The copy inequalities for mixed triangle/`K₄` packings with size-dependent gains; the integral form for the image `X` in `G` of maximum-weight mixed packings of the two copies (`mappedMixed`): `ν_w(G_{v→u}) + ν_w(G_{u→v}) = |X|_w ≤ 2ν_w(G) + D_2^w(H[X])`. |
 
 Here `G_{v→u}` replaces the neighbourhood of `v` by that of `u`, `ν₃` is the triangle packing
@@ -39,14 +38,14 @@ number and `ν₃*` its fractional relaxation.
 
 ## Files
 
-- [`PaperVChallenge.lean`](PaperVChallenge.lean): the definitions and the 19 statements; it imports only
+- [`PaperVChallenge.lean`](PaperVChallenge.lean): the definitions and the 18 statements; it imports only
   Mathlib. `edgesIn`, `IsTrianglePacking` and `IsFracTrianglePacking` are copied verbatim from
   [PALOMAR-2026-10-15-000011](https://palomar-registry.org/entry.html?id=PALOMAR-2026-10-15-000011&version=2)
   and `nu3` from [PALOMAR-2026-10-29-000006](https://palomar-registry.org/entry.html?id=PALOMAR-2026-10-29-000006&version=1)
   (Paper III); the other definitions are copied from the Paper V library.
 - [`PaperVSolution.lean`](PaperVSolution.lean): the same definitions, conversions of the structures
   (`ConflictSystem`, `ResourceRelaxation`, `ClassRealizer`, `RealCert`) to those of the library,
-  proofs that the registered `ν₃` and `ν₃*` equal the library's, and the 19 theorems.
+  proofs that the registered `ν₃` and `ν₃*` equal the library's, and the 18 theorems.
 - [`PaperV/`](PaperV): the library (63 modules), the import closure of the numbered results of
   the paper in the author's Lean freeze.
 - [`comparator.json`](comparator.json), [`formalization.yaml`](formalization.yaml).
@@ -76,7 +75,7 @@ theorem.
 ## Not included
 
 Proved in the library but not stated in the Challenge: Corollaries 3.2a, 3.2b, 4.6, 7.3a, Lemmas 3.5
-and 6.2k, Propositions 5.1, 7.1a, 7.1b, the SEAL statements of Section 8 (Propositions 8.1, 8.2,
+and 6.2k, Propositions 5.1, 7.1, 7.1a, 7.1b, the SEAL statements of Section 8 (Propositions 8.1, 8.2,
 Theorem 8.3) and Proposition 9.3. The SEAL implementation, its benchmarks and runtime model, and
 the enumeration of maximum packings in Section 9 are computations outside the formalization.
 
