@@ -1,0 +1,32 @@
+{
+  "challenge_module": "PaperVChallenge",
+  "solution_module": "PaperVSolution",
+  "theorem_names": [
+    "ErdosPaperV.lemma_3_1",
+    "ErdosPaperV.corollary_3_2",
+    "ErdosPaperV.theorem_3_4",
+    "ErdosPaperV.theorem_3_3",
+    "ErdosPaperV.theorem_3_4w",
+    "ErdosPaperV.theorem_4_2",
+    "ErdosPaperV.theorem_4_2_nu",
+    "ErdosPaperV.theorem_4_4",
+    "ErdosPaperV.theorem_5_2_galvin",
+    "ErdosPaperV.theorem_5_2_bkw",
+    "ErdosPaperV.corollary_5_3_galvin",
+    "ErdosPaperV.corollary_5_3_bkw",
+    "ErdosPaperV.example_5_5",
+    "ErdosPaperV.theorem_6_1",
+    "ErdosPaperV.theorem_6_2",
+    "ErdosPaperV.corollary_6_2a",
+    "ErdosPaperV.proposition_7_1",
+    "ErdosPaperV.theorem_7_3_fractional",
+    "ErdosPaperV.theorem_7_3_integral"
+  ],
+  "definition_names": [],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}

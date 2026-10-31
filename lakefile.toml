@@ -1,0 +1,34 @@
+name = "erdos81_paper_v"
+version = "0.1.0"
+defaultTargets = ["PaperV", "PaperVChallenge", "PaperVSolution"]
+requiresModuleSystem = true
+
+[leanOptions]
+pp.unicode.fun = true
+relaxedAutoImplicit = false
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "v4.35.0-rc3"
+
+[[require]]
+name = "brooks"
+git = "https://github.com/jtraverso/brooks"
+rev = "b99e6f500256586626396de9c2d6fd4d96119d60"
+
+[[require]]
+name = "galvin_dinitz"
+git = "https://github.com/jtraverso/galvin-dinitz"
+rev = "84dcda4c2a760f2b52b7e813affe7e6968f8bfce"
+
+[[lean_lib]]
+name = "PaperV"
+
+[[lean_lib]]
+name = "PaperVChallenge"
+roots = ["PaperVChallenge"]
+
+[[lean_lib]]
+name = "PaperVSolution"
+roots = ["PaperVSolution"]
