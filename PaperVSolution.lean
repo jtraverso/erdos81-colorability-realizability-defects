@@ -145,7 +145,9 @@ attribute [instance] ResourceRelaxation.finiteResource ResourceRelaxation.decRes
 structure ResourceRelaxation.Optimum {C : ConflictSystem} (P : ResourceRelaxation C) where
   /-- The optimal point. -/
   point : C.O → ℝ
+  /-- The point is feasible. -/
   feasible : point ∈ P.feasible
+  /-- No feasible point has a larger total value. -/
   maximal : ∀ y ∈ P.feasible, ∑ o, y o ≤ ∑ o, point o
 
 /-- The value `μ*` of an optimum. -/
