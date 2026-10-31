@@ -29,10 +29,10 @@ colouring of bipartite graphs) and to vertex copies of triangle packings.
 | `corollary_5_3_galvin`, `corollary_5_3_bkw` | Corollary 5.3 | Under either hypothesis the host system restricted to the requested bases `B` has packing number `|B|`. |
 | `example_5_5` | Example 5.5 | On `K_{r,r}`: `D_1 = r² − r`, host realizability defect `0`, `ν(hostCS) = r²`. |
 | `theorem_6_1` | Theorem 6.1 | `ν₃*(G_{v→u}) + ν₃*(G_{u→v}) ≤ 2ν₃*(G)` for nonadjacent `u, v`. |
-| `theorem_6_2` | Theorem 6.2 | `ν₃(G_{v→u}) + ν₃(G_{u→v}) = |T₂| ≤ 2ν₃(G) + oct(H[T₂])` for the mapped multiset `T₂`. |
+| `theorem_6_2` | Theorem 6.2 | For maximum triangle packings `P'`, `P''` of `G_{v→u}`, `G_{u→v}` and `T₂` their image in `G` (`mappedTri`): `ν₃(G_{v→u}) + ν₃(G_{u→v}) = |T₂| ≤ 2ν₃(G) + oct(H[T₂])`. |
 | `corollary_6_2a` | Corollary 6.2a | `ν₃(G_{v→u}) + ν₃(G_{u→v}) ≤ 3ν₃(G)`. |
 | `proposition_7_1` | Proposition 7.1 | The pure-profile packing number is `min(m⌊s/2⌋, C(s,2))`. |
-| `theorem_7_3_fractional`, `theorem_7_3_integral` | Theorem 7.3 | The copy inequalities for mixed triangle/`K₄` packings with size-dependent gains. |
+| `theorem_7_3_fractional`, `theorem_7_3_integral` | Theorem 7.3 | The copy inequalities for mixed triangle/`K₄` packings with size-dependent gains; the integral form for the image `X` in `G` of maximum-weight mixed packings of the two copies (`mappedMixed`): `ν_w(G_{v→u}) + ν_w(G_{u→v}) = |X|_w ≤ 2ν_w(G) + D_2^w(H[X])`. |
 
 Here `G_{v→u}` replaces the neighbourhood of `v` by that of `u`, `ν₃` is the triangle packing
 number and `ν₃*` its fractional relaxation.

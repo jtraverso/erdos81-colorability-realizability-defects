@@ -195,27 +195,25 @@ lemma card_copyMap_fibers
     apply hxy
     exact Subtype.ext (hpx.symm.trans hpy)
 
-/-- **Theorem 4.2 (integral copy inequality).** There is a copy multiset `T₂` of triangles of
-`G` (the image `φ'(P') ⊎ φ''(P'')` of maximum packings of the two copy graphs) with
-`ν₃(G_{v→u}) + ν₃(G_{u→v}) ≤ 2·ν₃(G) + oct(H[T₂])`.
-
-Proof route (cleaner than the manuscript's): the bound is `transfer_half` on the triangle
-conflict system `triCS G` applied to `T₂`, together with `multSize T₂ = ν₃(G_{v→u})+ν₃(G_{u→v})`
-(the total map is size-preserving and lands in triangles of `G`). The manuscript's edge-load
-lemma is not needed for the inequality: twin-adjacency in `H[T₂]` already forces each colour
-class to be a genuine triangle packing of `G` (via `indep_le_nu`). -/
-theorem copy_integral (G : SimpleGraph V) [DecidableRel G.Adj] (v u : V) (huv : ¬ G.Adj u v) :
-    ∃ T₂ : (triCS G).O → ℕ,
-      multSize (triCS G) T₂ = nu3 (copyGraph G v u) + nu3 (copyGraph G u v) ∧
-      nu3 (copyGraph G v u) + nu3 (copyGraph G u v)
-        ≤ 2 * nu3 G + oct (Hgraph (triCS G) T₂) := by
+/-- **Theorem 4.2**, for given maximum packings `P'` of `G_{v→u}` and `P''` of `G_{u→v}`: the
+multiset `T₂ = φ'(P') ⊎ φ''(P'')` of their images in `G` has size `ν₃(G_{v→u}) + ν₃(G_{u→v})` and
+`ν₃(G_{v→u}) + ν₃(G_{u→v}) ≤ 2·ν₃(G) + oct(H[T₂])`. -/
+theorem copy_integral_of (G : SimpleGraph V) [DecidableRel G.Adj] (v u : V) (huv : ¬ G.Adj u v)
+    (P' : Finset (triCS (copyGraph G v u)).O) (hP' : CSFeasible _ P')
+    (hP'card : P'.card = nu (triCS (copyGraph G v u)))
+    (P'' : Finset (triCS (copyGraph G u v)).O) (hP'' : CSFeasible _ P'')
+    (hP''card : P''.card = nu (triCS (copyGraph G u v))) :
+    multSize (triCS G) (fun t => (P'.filter (fun s => copyMap v u s.1 = t.1)).card +
+        (P''.filter (fun s => copyMap u v s.1 = t.1)).card) =
+      nu3 (copyGraph G v u) + nu3 (copyGraph G u v) ∧
+    nu3 (copyGraph G v u) + nu3 (copyGraph G u v)
+      ≤ 2 * nu3 G + oct (Hgraph (triCS G) (fun t => (P'.filter (fun s => copyMap v u s.1 = t.1)).card +
+        (P''.filter (fun s => copyMap u v s.1 = t.1)).card)) := by
   classical
-  obtain ⟨P', hP', hP'card⟩ := exists_max_feasible (triCS (copyGraph G v u))
   have hvu : ¬G.Adj v u := fun h => huv h.symm
-  obtain ⟨P'', hP'', hP''card⟩ := exists_max_feasible (triCS (copyGraph G u v))
-  let T₂ : (triCS G).O → ℕ := fun t =>
+  set T₂ : (triCS G).O → ℕ := fun t =>
     (P'.filter (fun s => copyMap v u s.1 = t.1)).card +
-    (P''.filter (fun s => copyMap u v s.1 = t.1)).card
+    (P''.filter (fun s => copyMap u v s.1 = t.1)).card with hT₂
   have hinj' := copyMap_injective_on_feasible G v u huv P' hP'
   have hinj'' := copyMap_injective_on_feasible G u v hvu P'' hP''
   have hqm : IsQMultiset (triCS G) T₂ 2 := by
@@ -241,7 +239,26 @@ theorem copy_integral (G : SimpleGraph V) [DecidableRel G.Adj] (v u : V) (huv : 
     rw [hsize, hP'card, hP''card]
   have hbound := transfer_half (triCS G) T₂ hqm
   rw [hsize, hP'card, hP''card] at hbound
-  exact ⟨T₂, hsize', hbound⟩
+  exact ⟨hsize', hbound⟩
+
+/-- **Theorem 4.2 (integral copy inequality).** There is a copy multiset `T₂` of triangles of
+`G` (the image `φ'(P') ⊎ φ''(P'')` of maximum packings of the two copy graphs) with
+`ν₃(G_{v→u}) + ν₃(G_{u→v}) ≤ 2·ν₃(G) + oct(H[T₂])`.
+
+Proof route (cleaner than the manuscript's): the bound is `transfer_half` on the triangle
+conflict system `triCS G` applied to `T₂`, together with `multSize T₂ = ν₃(G_{v→u})+ν₃(G_{u→v})`
+(the total map is size-preserving and lands in triangles of `G`). The manuscript's edge-load
+lemma is not needed for the inequality: twin-adjacency in `H[T₂]` already forces each colour
+class to be a genuine triangle packing of `G` (via `indep_le_nu`). -/
+theorem copy_integral (G : SimpleGraph V) [DecidableRel G.Adj] (v u : V) (huv : ¬ G.Adj u v) :
+    ∃ T₂ : (triCS G).O → ℕ,
+      multSize (triCS G) T₂ = nu3 (copyGraph G v u) + nu3 (copyGraph G u v) ∧
+      nu3 (copyGraph G v u) + nu3 (copyGraph G u v)
+        ≤ 2 * nu3 G + oct (Hgraph (triCS G) T₂) := by
+  classical
+  obtain ⟨P', hP', hP'card⟩ := exists_max_feasible (triCS (copyGraph G v u))
+  obtain ⟨P'', hP'', hP''card⟩ := exists_max_feasible (triCS (copyGraph G u v))
+  exact ⟨_, copy_integral_of G v u huv P' hP' hP'card P'' hP'' hP''card⟩
 
 omit [Fintype V] in
 /-- Membership in a copy image: `y ∈ φ(t)` iff `y` survives (`y∈t, y≠w`) or is the image of `w`. -/

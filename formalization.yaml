@@ -166,8 +166,10 @@ fidelity:
     used) and assume all its coordinates are at most one. Theorem 4.4 and Example 5.5 state the
     realizability defect for the admissibility classes of identity and host realizers. In
     Corollary 5.3 the host system restricted to B has the triangles (e, h) with e ∈ B as objects.
-    Theorems 6.2 and 7.3 (integral) state the existence of the mapped multiset rather than fixing
-    the optimal packings it comes from. ν₃* is a supremum over fractional triangle packings
+    Theorems 6.2 and 7.3 (integral) hold for arbitrary maximum (maximum-weight) packings P' of
+    G_{v→u} and P'' of G_{u→v}, given as feasible sets of the conflict systems: the multiset is
+    their image in G (mappedTri, mappedMixed), each member of P' and P'' counted at its image under
+    the copy map. ν₃* is a supremum over fractional triangle packings
     (registered definition), proved equal to the library's linear-programming form.
 
 review:

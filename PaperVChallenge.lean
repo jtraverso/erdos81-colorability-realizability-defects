@@ -369,6 +369,18 @@ abbrev triCS {V : Type*} [Fintype V] [DecidableEq V] (G : SimpleGraph V) [Decida
   Kirrefl := by rintro a ⟨h1, _⟩; exact h1 rfl
   decK := by intro a b; dsimp only; infer_instance
 
+/-- The copy map on vertex sets: `v` is sent to `u`, every other vertex is fixed. -/
+def copyMap {V : Type*} [DecidableEq V] (v u : V) (t : Finset V) : Finset V :=
+  t.image (fun x => if x = v then u else x)
+
+/-- The multiset of triangles of `G` obtained by mapping back to `G` a triangle packing `P'` of
+`G_{v→u}` and a triangle packing `P''` of `G_{u→v}`: the multiplicity of `t` is the number of
+members of `P'` and of `P''` whose image is `t`. -/
+def mappedTri {V : Type*} [Fintype V] [DecidableEq V] (G : SimpleGraph V) [DecidableRel G.Adj]
+    (v u : V) (P' : Finset (triCS (copyGraph G v u)).O) (P'' : Finset (triCS (copyGraph G u v)).O) :
+    (triCS G).O → ℕ :=
+  fun t => #(P'.filter fun s => copyMap v u s.1 = t.1) + #(P''.filter fun s => copyMap u v s.1 = t.1)
+
 /-! ### Pure profiles and mixed copies (§7) -/
 
 /-- Pure-profile objects: a host `Fin m` and a pair from the common palette `Fin s`. -/
@@ -397,6 +409,13 @@ abbrev mixedCS {V : Type*} [Fintype V] [DecidableEq V] (G : SimpleGraph V) [Deci
     exact ⟨h1.symm, by rwa [Finset.inter_comm]⟩
   Kirrefl := by rintro a ⟨h1, _⟩; exact h1 rfl
   decK := by intro a b; dsimp only; infer_instance
+
+/-- The multiset of mixed cliques of `G` obtained by mapping back to `G` mixed packings `P'` of
+`G_{v→u}` and `P''` of `G_{u→v}`. -/
+def mappedMixed {V : Type*} [Fintype V] [DecidableEq V] (G : SimpleGraph V) [DecidableRel G.Adj]
+    (v u : V) (P' : Finset (mixedCS (copyGraph G v u)).O)
+    (P'' : Finset (mixedCS (copyGraph G u v)).O) : (mixedCS G).O → ℕ :=
+  fun t => #(P'.filter fun s => copyMap v u s.1 = t.1) + #(P''.filter fun s => copyMap u v s.1 = t.1)
 
 /-- The size-dependent gain as a weight on the mixed system. -/
 def mixedWeight {V : Type*} [Fintype V] [DecidableEq V] (G : SimpleGraph V) [DecidableRel G.Adj]
@@ -530,14 +549,18 @@ theorem theorem_6_1 {V : Type*} [Fintype V] [DecidableEq V] (G : SimpleGraph V)
     nu3star (copyGraph G v u) + nu3star (copyGraph G u v) ≤ 2 * nu3star G := by
   sorry
 
-/-- **Theorem 6.2 (integral copy inequality).** For nonadjacent `u, v` there is a multiset `T₂` of
-triangles of `G` (the images of optimal packings of the two copies) with
-`ν₃(G_{v→u}) + ν₃(G_{u→v}) = |T₂| ≤ 2 ν₃(G) + oct(H[T₂])`. -/
+/-- **Theorem 6.2 (integral copy inequality).** Let `u, v` be nonadjacent and let `P'`, `P''` be
+maximum triangle packings of `G_{v→u}` and `G_{u→v}`. The multiset `T₂` of their images in `G`
+(`mappedTri`) satisfies `ν₃(G_{v→u}) + ν₃(G_{u→v}) = |T₂| ≤ 2 ν₃(G) + oct(H[T₂])`. -/
 theorem theorem_6_2 {V : Type*} [Fintype V] [DecidableEq V] (G : SimpleGraph V)
-    [DecidableRel G.Adj] (v u : V) (huv : ¬ G.Adj u v) :
-    ∃ T₂ : (triCS G).O → ℕ,
-      multSize (triCS G) T₂ = nu3 (copyGraph G v u) + nu3 (copyGraph G u v) ∧
-      nu3 (copyGraph G v u) + nu3 (copyGraph G u v) ≤ 2 * nu3 G + oct (Hgraph (triCS G) T₂) := by
+    [DecidableRel G.Adj] (v u : V) (huv : ¬ G.Adj u v)
+    (P' : Finset (triCS (copyGraph G v u)).O) (hP' : CSFeasible _ P')
+    (hP'card : #P' = nu3 (copyGraph G v u))
+    (P'' : Finset (triCS (copyGraph G u v)).O) (hP'' : CSFeasible _ P'')
+    (hP''card : #P'' = nu3 (copyGraph G u v)) :
+    multSize (triCS G) (mappedTri G v u P' P'') = nu3 (copyGraph G v u) + nu3 (copyGraph G u v) ∧
+      nu3 (copyGraph G v u) + nu3 (copyGraph G u v) ≤
+        2 * nu3 G + oct (Hgraph (triCS G) (mappedTri G v u P' P'')) := by
   sorry
 
 /-- **Corollary 6.2a (triple copy bound).** For nonadjacent `u, v`,
@@ -559,19 +582,25 @@ theorem theorem_7_3_fractional {V : Type*} [Fintype V] [DecidableEq V] (G : Simp
     Wstar (copyGraph G v u) gain + Wstar (copyGraph G u v) gain ≤ 2 * Wstar G gain := by
   sorry
 
-/-- **Theorem 7.3 (mixed copy inequality, integral).** For nonadjacent `u, v` and every
-size-dependent gain there is a multiset `X` of cliques of `G` (the images of optimal mixed
-packings of the copies) with
+/-- **Theorem 7.3 (mixed copy inequality, integral).** Let `u, v` be nonadjacent, fix a
+size-dependent gain, and let `P'`, `P''` be maximum-weight mixed packings of `G_{v→u}` and
+`G_{u→v}`. The multiset `X` of their images in `G` (`mappedMixed`) satisfies
 `ν_w(G_{v→u}) + ν_w(G_{u→v}) = |X|_w ≤ 2 ν_w(G) + D_2^w(H[X])`. -/
 theorem theorem_7_3_integral {V : Type*} [Fintype V] [DecidableEq V] (G : SimpleGraph V)
-    [DecidableRel G.Adj] (v u : V) (huv : ¬ G.Adj u v) (gainOf : ℕ → ℕ) :
-    ∃ X : (mixedCS G).O → ℕ,
-      wMultSize (mixedCS G) (mixedWeight G gainOf) X =
+    [DecidableRel G.Adj] (v u : V) (huv : ¬ G.Adj u v) (gainOf : ℕ → ℕ)
+    (P' : Finset (mixedCS (copyGraph G v u)).O) (hP' : CSFeasible _ P')
+    (hP'w : ∑ s ∈ P', mixedWeight _ gainOf s =
+      wNu (mixedCS (copyGraph G v u)) (mixedWeight _ gainOf))
+    (P'' : Finset (mixedCS (copyGraph G u v)).O) (hP'' : CSFeasible _ P'')
+    (hP''w : ∑ s ∈ P'', mixedWeight _ gainOf s =
+      wNu (mixedCS (copyGraph G u v)) (mixedWeight _ gainOf)) :
+    wMultSize (mixedCS G) (mixedWeight G gainOf) (mappedMixed G v u P' P'') =
         wNu (mixedCS (copyGraph G v u)) (mixedWeight _ gainOf) +
           wNu (mixedCS (copyGraph G u v)) (mixedWeight _ gainOf) ∧
       wNu (mixedCS (copyGraph G v u)) (mixedWeight _ gainOf) +
           wNu (mixedCS (copyGraph G u v)) (mixedWeight _ gainOf) ≤
-        2 * wNu (mixedCS G) (mixedWeight G gainOf) + wDq (mixedCS G) (mixedWeight G gainOf) X 2 := by
+        2 * wNu (mixedCS G) (mixedWeight G gainOf) +
+          wDq (mixedCS G) (mixedWeight G gainOf) (mappedMixed G v u P' P'') 2 := by
   sorry
 
 end ErdosPaperV
